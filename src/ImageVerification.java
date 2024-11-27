@@ -2,16 +2,16 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
 public class ImageVerification {
-
+	public static int smallWidth;
+	public static int smallHeight;
     public static void main(String[] args) throws Exception {	
-    	File largeImageFile = new File("C:/SeleniumFramework/Images/CapturedImages/screenshot.bmp");
-    	File smallImageFile = new File("C:/SeleniumFramework/Images/Icon/GOTG.bmp");
+    	File largeImageFile = new File("C:/SeleniumFramework/Images/CapturedImages/COC_ProfileIcon.bmp");
+    	File smallImageFile = new File("C:/SeleniumFramework/Images/Icon/COC_ProfileIcon.bmp");
 
         BufferedImage largeImage = ImageIO.read(largeImageFile);
         BufferedImage smallImage = ImageIO.read(smallImageFile);
@@ -23,7 +23,7 @@ public class ImageVerification {
         Point coordinates = findImageCoordinates(grayLargeImage, graySmallImage);
         if (coordinates != null) {
             System.out.println("Small image found in the large image.");
-            System.out.println("Small image found at coordinates: " + coordinates);
+            System.out.println("Small image found at coordinates:- x=" + coordinates.x +", y="+coordinates.y);
         } else {
             System.out.println("Small image not found in the large image.");
         }
@@ -44,10 +44,10 @@ public class ImageVerification {
     public static Point findImageCoordinates(BufferedImage largeImage, BufferedImage smallImage) throws InterruptedException, ExecutionException {
         int width = largeImage.getWidth();
         int height = largeImage.getHeight();
-        int smallWidth = smallImage.getWidth();
-        int smallHeight = smallImage.getHeight();
+        smallWidth = smallImage.getWidth();
+        smallHeight = smallImage.getHeight();
 
-        ExecutorService executor = Executors.newFixedThreadPool(4); // Create a thread pool for optimization
+        ExecutorService executor = Executors.newFixedThreadPool(7); // Create a thread pool for optimization
         List<Callable<Point>> tasks = new ArrayList<>();
 
         // Loop through all possible positions where the small image can fit inside the large image
@@ -77,7 +77,7 @@ public class ImageVerification {
     public static Point compareRegion(BufferedImage largeImage, BufferedImage smallImage, int startX, int startY) {
         int smallWidth = smallImage.getWidth();
         int smallHeight = smallImage.getHeight();
-        int tolerance = 10; // Tolerance for pixel value variations
+        int tolerance = 30; // Tolerance for pixel value variations
 
         // Compare each pixel in the small image with the corresponding pixel in the large image
         for (int i = 0; i < smallWidth; i++) {
@@ -96,6 +96,6 @@ public class ImageVerification {
             }
         }
 
-        return new Point(startX, startY); // Return the top-left corner coordinates where the match was found
+        return new Point(startX + smallWidth/2, startY + smallHeight/2); // Return the top-left corner coordinates where the match was found
     }
 }
